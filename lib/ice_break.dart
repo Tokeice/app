@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_nm/result_screen.dart';
 
 class IceBreak extends StatefulWidget {
   @override
@@ -65,7 +66,7 @@ class _IceBreakState extends State<IceBreak> {
             child: Column(children: [
               Container(
                 child: Text(_isRecording ? "Mic: ON" : "Mic: OFF",
-                    style: TextStyle(fontSize: 25, color: Colors.blue)),
+                  style: TextStyle(fontSize: 25, color: Colors.blue)),
                 margin: EdgeInsets.only(top: 20),
               ),
               Container(
@@ -78,6 +79,10 @@ class _IceBreakState extends State<IceBreak> {
                 child: Text(
                   'Max: ${_latestReading?.maxDecibel.toStringAsFixed(2)} dB',
                 ),
+              ),
+              ElevatedButton(
+                onPressed: _isRecording ? stop : start,
+                child: _isRecording ? Icon(Icons.stop) : Icon(Icons.mic),
               )
             ]),
           ),
@@ -85,9 +90,13 @@ class _IceBreakState extends State<IceBreak> {
       ),
     ),
     floatingActionButton: FloatingActionButton(
-      backgroundColor: _isRecording ? Colors.red : Colors.green,
-      child: _isRecording ? Icon(Icons.stop) : Icon(Icons.mic),
-      onPressed: _isRecording ? stop : start,
+      child: Text('終了'),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ResultScreen()),
+        );
+      },
     ),
   );
 }

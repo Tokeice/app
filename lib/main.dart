@@ -10,17 +10,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: IceBreakTitle(),
+      home: TitleScreen(),
     );
   }
 }
 
-class IceBreakTitle extends StatefulWidget {
+class TitleScreen extends StatefulWidget {
   @override
-  _IceBreakState createState() => _IceBreakState();
+  _TitleScreenState createState() => _TitleScreenState();
 }
 
-class _IceBreakState extends State<IceBreakTitle> {
+class _TitleScreenState extends State<TitleScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     body: Center(
