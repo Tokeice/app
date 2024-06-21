@@ -120,13 +120,13 @@ class _IceBreakState extends State<IceBreak> {
             margin: EdgeInsets.all(25),
             child: Column(children: [
               Container(
-                child: Text('Thme: $theme',
-                  style: TextStyle(fontSize: 25, color: Colors.blue)),
+                child: Text('Theme: $theme',
+                  style: TextStyle(fontSize: 25, color: Colors.black)),
                 margin: EdgeInsets.only(top: 20),
               ),
               Container(
                 child: Text(_isRecording ? "Mic: ON" : "Mic: OFF",
-                  style: TextStyle(fontSize: 25, color: Colors.blue)),
+                  style: TextStyle(fontSize: 25, color: Colors.black)),
                 margin: EdgeInsets.only(top: 20),
               ),
               Container(
