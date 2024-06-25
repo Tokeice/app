@@ -28,6 +28,7 @@ class _IceBreakState extends State<IceBreak> {
   void initState() {
     super.initState();
     _loadTheme();
+    start();
   }
 
   @override
@@ -140,10 +141,6 @@ class _IceBreakState extends State<IceBreak> {
                   'Max: ${_latestReading?.maxDecibel.toStringAsFixed(2)} dB',
                 ),
               ),
-              ElevatedButton(
-                onPressed: _isRecording ? stop : start,
-                child: _isRecording ? Icon(Icons.stop) : Icon(Icons.mic),
-              )
             ]),
           ),
         ],
