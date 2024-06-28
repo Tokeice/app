@@ -150,7 +150,7 @@ class _IceBreakState extends State<IceBreak> {
     floatingActionButton: FloatingActionButton(
       child: Text('終了'),
       onPressed: () {
-        stop;
+        stop();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ResultScreen()),
