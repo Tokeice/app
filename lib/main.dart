@@ -34,7 +34,7 @@ class _TitleScreenState extends State<TitleScreen> {
             Container(
               alignment: Alignment.center,
               child: SvgPicture.asset(
-                'images/sample.svg',
+                'images/character_normal.svg',
                 width: screenWidth * 0.5, // 画像の幅を画面幅の50%に指定
               ),
             ),
