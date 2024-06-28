@@ -42,9 +42,9 @@ class _TitleScreenState extends State<TitleScreen> {
                   alignment: Alignment.center,
                   children: [
                     SizedBox(
-                      child: SvgPicture.asset('images/title_backgrond.svg',
+                      child: SvgPicture.asset('images/title_background.svg',
                           width: screenWidth,
-                          height: screenHeight * 0.3,
+                          // height: screenHeight * 0.3,
                           fit: BoxFit.fill),
                     ),
                     Positioned(
