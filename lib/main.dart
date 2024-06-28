@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        scaffoldBackgroundColor: Color.fromARGB(0xFF, 0xFF, 0xF6, 0xC9),
         fontFamily: 'Zen Maru Gothic' // アプリ全体のフォントの指定
       ),
       home: TitleScreen(),
