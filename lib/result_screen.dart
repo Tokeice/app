@@ -58,20 +58,25 @@ class ResultScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                   SizedBox(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => TitleScreen()),
-                          );
-                        },
-                        child: SvgPicture.asset(
-                          'images/button_back_to_title.svg',
-                          width: screenWidth * 0.8,
-                        ),
+                    child: GestureDetector(
+                      child: SvgPicture.asset(
+                        'images/button_back_to_title.svg',
+                        width: screenWidth * 0.8,
+                      ),
                     )
                   ),
                   Positioned(
+                    child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TitleScreen()),
+                      );
+                    },
                     child: Text(
                       'タイトルにもどる',
                       textAlign: TextAlign.center,
@@ -80,6 +85,7 @@ class ResultScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    )
                   )
             ])),
           )
