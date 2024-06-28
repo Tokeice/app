@@ -22,6 +22,7 @@ class ResultScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: screenWidth * 0.1,
+                    fontWeight: FontWeight.bold,
                     color: Color.fromARGB(0xFF, 0x41, 0x64, 0x98)),
               ),
               Text(
@@ -29,6 +30,7 @@ class ResultScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: screenWidth * 0.1,
+                    fontWeight: FontWeight.bold,
                     color: Color.fromARGB(0xFF, 0x14, 0x25, 0x40)),
               )
             ]),
@@ -74,7 +76,8 @@ class ResultScreen extends StatelessWidget {
                       'タイトルにもどる',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: screenWidth * 0.08
+                        fontSize: screenWidth * 0.08,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   )
