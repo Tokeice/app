@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,18 +23,36 @@ class TitleScreen extends StatefulWidget {
 
 class _TitleScreenState extends State<TitleScreen> {
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: Center(
-      // 画面遷移のボタン
-      child: ElevatedButton(
-        child: Text('スタート'),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => IceBreak()),
-          );
-        },
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width; // 画面の幅を取得
+
+    return Scaffold(
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                'images/sample.svg',
+                width: screenWidth * 0.5, // 画像の幅を画面幅の50%に指定
+              ),
+            ),
+            
+            Container(
+              child: ElevatedButton(
+                child: Text('スタート'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => IceBreak()),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
