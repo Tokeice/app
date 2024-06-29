@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,7 +14,6 @@ class IceBreak extends StatefulWidget {
 }
 
 class _IceBreakState extends State<IceBreak> {
-
   bool _isRecording = false;
   NoiseReading? _latestReading;
   StreamSubscription<NoiseReading>? _noiseSubscription;
@@ -96,66 +97,87 @@ class _IceBreakState extends State<IceBreak> {
   }
 
   Color changeBackground() {
-    if (!_isRecording) { // 録音フラグがfalseの場合
+    if (!_isRecording) {
+      // 録音フラグがfalseの場合
       return Colors.white;
-    }
-    else if ((_latestReading?.meanDecibel ?? 0 ) > _threshold){ // 音が一定のdBより大きい
+    } else if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
+      // 音が一定のdBより大きい
       _startTimer();
 
-      if (_seconds >= 5){ // 一定のdBより大きい状態が5秒以上続く
+      if (_seconds >= 5) {
+        // 一定のdBより大きい状態が5秒以上続く
         return Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC);
       }
-    }else {
+    } else {
       _stopTimer();
     }
     return Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2);
   }
 
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.all(25),
-            child: Column(children: [
-              Container(
-                child: Text('Theme: $theme',
-                  style: TextStyle(fontSize: 25, color: Colors.black)),
-                margin: EdgeInsets.only(top: 20),
-              ),
-              Container(
-                child: Text(_isRecording ? "Mic: ON" : "Mic: OFF",
-                  style: TextStyle(fontSize: 25, color: Colors.black)),
-                margin: EdgeInsets.only(top: 20),
-              ),
-              Container(
-                child: Text(
-                  'Noise: ${_latestReading?.meanDecibel.toStringAsFixed(2)} dB',
-                ),
-                margin: EdgeInsets.only(top: 20),
-              ),
-              Container(
-                child: Text(
-                  'Max: ${_latestReading?.maxDecibel.toStringAsFixed(2)} dB',
-                ),
-              ),
-            ]),
+  GestureDetector changeEndBottun(double screenWidth) {
+    if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
+      // 音が一定のdBより大きい
+
+      if (_seconds >= 5) {
+        // 一定のdBより大きい状態が5秒以上続く
+        return GestureDetector(
+          child: SvgPicture.asset(
+            'images/button_end_excite.svg',
+            width: screenWidth * 0.4,
           ),
-        ],
+          onTap: () {
+            stop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ResultScreen()),
+            );
+          },
+        );
+      }
+    }
+    return GestureDetector(
+      child: SvgPicture.asset(
+        'images/button_end_silent.svg',
+        width: screenWidth * 0.4,
       ),
-    ),
-    backgroundColor: changeBackground(),
-    floatingActionButton: FloatingActionButton(
-      child: Text('終了'),
-      onPressed: () {
+      onTap: () {
         stop();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ResultScreen()),
         );
       },
-    ),
-  );
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+      body: Center(
+          child: Stack(
+        children: [
+          Align(
+              alignment: Alignment.topRight,
+              child: changeEndBottun(screenWidth)),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.all(25),
+                child: Column(children: [
+                  Container(
+                    child: Text('Theme: $theme',
+                        style: TextStyle(fontSize: 25, color: Colors.black)),
+                    margin: EdgeInsets.only(top: 20),
+                  ),
+                ]),
+              ),
+            ],
+          ),
+        ],
+      )),
+      backgroundColor: changeBackground(),
+    );
+  }
 }
