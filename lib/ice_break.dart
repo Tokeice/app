@@ -103,12 +103,12 @@ class _IceBreakState extends State<IceBreak> {
       _startTimer();
 
       if (_seconds >= 5){ // 一定のdBより大きい状態が5秒以上続く
-        return Colors.red;
+        return Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC);
       }
     }else {
       _stopTimer();
     }
-    return Colors.blue;
+    return Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2);
   }
 
   @override
