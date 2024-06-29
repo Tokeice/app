@@ -53,7 +53,7 @@ class _IceBreakState extends State<IceBreak> {
   Future<void> requestPermission() async =>
       await Permission.microphone.request();
 
-  /// サンプリングを開始
+  /// ノイズメーターのサンプリングを開始
   Future<void> start() async {
     // ノイズメーターの初期化
     noiseMeter ??= NoiseMeter();
@@ -66,18 +66,19 @@ class _IceBreakState extends State<IceBreak> {
     setState(() => _isRecording = true);
   }
 
+  /// ノイズメーターのサンプリングを停止
+  void stop() {
+    _noiseSubscription?.cancel();
+    setState(() => _isRecording = false);
+  }
+
+  /// トークテーマの読み込み
   Future<void> _loadTheme() async {
     String jsonString = await rootBundle.loadString('assets/topics.json');
     Map<String, dynamic> jsonData = json.decode(jsonString);
     setState(() {
       theme = jsonData['theme'];
     });
-  }
-
-  /// ノイズメーターのサンプリングを停止
-  void stop() {
-    _noiseSubscription?.cancel();
-    setState(() => _isRecording = false);
   }
 
   void _startTimer() {
