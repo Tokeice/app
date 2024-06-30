@@ -29,7 +29,6 @@ class _TitleScreenState extends State<TitleScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width; // 画面の幅を取得
-    double screenHeight = MediaQuery.of(context).size.height; // 画面の高さを取得
 
     return Scaffold(
       body: Container(
@@ -44,7 +43,6 @@ class _TitleScreenState extends State<TitleScreen> {
                     SizedBox(
                       child: SvgPicture.asset('images/title_background.svg',
                           width: screenWidth,
-                          // height: screenHeight * 0.3,
                           fit: BoxFit.fill),
                     ),
                     Positioned(

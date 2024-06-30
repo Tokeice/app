@@ -238,6 +238,8 @@ class _IceBreakState extends State<IceBreak> {
             mainAxisSize: MainAxisSize.min,
             children: [
               speechBubbleWidget(context, direction, text),
+              if (direction == Direction.top || direction == Direction.bottom)
+                SizedBox(height: screenWidth * 0.1),
               SvgPicture.asset(
                 'images/character_normal.svg',
                 width: screenWidth * 0.5,
@@ -259,7 +261,7 @@ class _IceBreakState extends State<IceBreak> {
           Align(
               alignment: Alignment.topRight,
               child: changeEndButton(screenWidth)),
-          directionCharacterSpeechWidget(context, Direction.bottom, 'ねぇ、好きな食べ物を教えてよ！'),
+          directionCharacterSpeechWidget(context, Direction.left, theme),
         ],
       )),
       backgroundColor: changeBackground(),
