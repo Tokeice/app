@@ -106,14 +106,14 @@ class _IceBreakState extends State<IceBreak> {
       return Colors.white;
     } else if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
       // 音が一定のdBより大きい
-      // _startTimer();
+      _startTimer();
 
       if (_exciteSeconds >= 5) {
         // 一定のdBより大きい状態が5秒以上続く
         return Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC);
       }
     } else {
-      // _stopTimer();
+      _stopTimer();
     }
     return Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2);
   }
