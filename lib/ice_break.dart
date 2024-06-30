@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
@@ -172,38 +171,41 @@ class _IceBreakState extends State<IceBreak> {
     );
   }
 
-  Column selfIntroCharactor(double screenWidth) {
+  Transform selfIntroCharactor(double screenWidth) {
     double speechWidth = screenWidth * 0.8;
     double characterWidth = screenWidth * 0.5;
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            SvgPicture.asset(
-              'images/speech_bubble_vertical_screen.svg',
-              width: speechWidth,
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: speechWidth * 0.05),
-              width: speechWidth,
-              child: Text(
-                '君から順番に\n自己紹介して！',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: screenWidth * 0.1,
-                  color: Colors.black
+    return Transform.translate(
+      offset: Offset(0, screenWidth * 0.13),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SvgPicture.asset(
+                'images/speech_bubble_vertical_screen.svg',
+                width: speechWidth,
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: speechWidth * 0.05),
+                width: speechWidth,
+                child: Text(
+                  '君から順番に\n自己紹介して！',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenWidth * 0.1,
+                    color: Colors.black
+                  ),
                 ),
               ),
-            )
-          ],
-        ),
-        SvgPicture.asset(
-          'images/character_normal_upper_half.svg',
-          width: characterWidth,
-        ),
-      ],
+            ],
+          ),
+          SvgPicture.asset(
+            'images/character_normal.svg',
+            width: characterWidth,
+          ),
+        ],
+      )
     );
   }
 

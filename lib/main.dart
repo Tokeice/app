@@ -1,8 +1,5 @@
-import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'ice_break.dart';
 
 void main() => runApp(MyApp());
