@@ -154,33 +154,99 @@ class _IceBreakState extends State<IceBreak> {
     );
   }
 
+  Container selfIntroArrow(double screenWidth) {
+    return Container(
+        // alignment: Alignment.center,
+        child: Column(
+          children: [
+            Text(
+              '時計回りに',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: screenWidth * 0.1,
+                  color: Colors.white),
+            ),
+            Container(
+              child: SvgPicture.asset(
+                'images/arrow_self_introduction.svg',
+                width: screenWidth * 0.5,
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Container selfIntroCharactor(double screenWidth) {
+    double speechWidth = screenWidth * 0.8;
+    double characterWidth = screenWidth * 0.5;
+    return Container(
+        child: Column(
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  child: SvgPicture.asset(
+                    'images/speech_bubble_vertical_screen.svg',
+                    width: speechWidth,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(bottom: speechWidth * 0.05),
+                  width: speechWidth,
+                  child: Text(
+                    '君から順番に\n自己紹介して！',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenWidth * 0.1,
+                        color: Colors.black),
+                  ),
+                )
+              ],
+            ),
+            Container(
+                  child: SvgPicture.asset(
+                    'images/character_normal_upper_half.svg',
+                    width: characterWidth,
+                  ),
+                ),
+          ],
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Center(
-          child: Stack(
+      body: Stack(
         children: [
           Align(
               alignment: Alignment.topRight,
               child: changeEndBottun(screenWidth)),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.all(25),
-                child: Column(children: [
-                  Container(
-                    child: Text('Theme: $theme',
-                        style: TextStyle(fontSize: 25, color: Colors.black)),
-                    margin: EdgeInsets.only(top: 20),
-                  ),
-                ]),
+          Container(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // margin: EdgeInsets.all(25),
+                  // child: selfIntro(screenWidth),
+                  // child: Column(children: [
+                  // Container(
+                  //   child: Text('Theme: $theme',
+                  //       style: TextStyle(fontSize: 25, color: Colors.black)),
+                  //   margin: EdgeInsets.only(top: 20),
+                  // ),
+                  // ]),
+                  selfIntroArrow(screenWidth),
+                  selfIntroCharactor(screenWidth),
+                ],
               ),
-            ],
-          ),
+            )
+          )
         ],
-      )),
+      ),
       backgroundColor: changeBackground(),
     );
   }
