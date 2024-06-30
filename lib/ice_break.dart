@@ -133,7 +133,7 @@ class _IceBreakState extends State<IceBreak> {
             stop();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ResultScreen()),
+              MaterialPageRoute(builder: (context) => ResultScreen(_score)),
             );
           },
         );
@@ -148,7 +148,7 @@ class _IceBreakState extends State<IceBreak> {
         stop();
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ResultScreen()),
+          MaterialPageRoute(builder: (context) => ResultScreen(_score)),
         );
       },
     );
