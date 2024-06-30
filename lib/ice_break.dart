@@ -202,6 +202,7 @@ class _IceBreakState extends State<IceBreak> {
 
   /// キャラクターと吹き出し
   /// direction: キャラクターの向き
+  /// text: 吹き出しのテキスト
   Widget directionCharacterSpeechWidget(BuildContext context, Direction direction, String text) {
     double screenWidth = MediaQuery.of(context).size.width;
     Alignment alignment = Alignment.bottomCenter;
