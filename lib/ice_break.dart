@@ -19,9 +19,10 @@ class _IceBreakState extends State<IceBreak> {
   StreamSubscription<NoiseReading>? _noiseSubscription;
   NoiseMeter? noiseMeter;
 
-  int _seconds = 0; // 沈黙判定の秒数カウント用
-  Timer? _timer; // 沈黙判定の秒数カウント用
-  final int _threshold = 60; // 沈黙判定の閾値(dB)
+  int _exciteSeconds = 0; // 盛り上がり判定の秒数カウント用
+  int _score = 0; // スコアの秒数カウント用
+  Timer? _timer; // 盛り上がり判定の秒数カウント用タイマー
+  final int _threshold = 60; // 盛り上がり判定の閾値(dB)
 
   String theme = "Loading...";
 
@@ -30,6 +31,7 @@ class _IceBreakState extends State<IceBreak> {
     super.initState();
     _loadTheme();
     start();
+    _score = 0;
   }
 
   @override
@@ -53,7 +55,7 @@ class _IceBreakState extends State<IceBreak> {
   Future<void> requestPermission() async =>
       await Permission.microphone.request();
 
-  /// サンプリングを開始
+  /// ノイズメーターのサンプリングを開始
   Future<void> start() async {
     // ノイズメーターの初期化
     noiseMeter ??= NoiseMeter();
@@ -66,6 +68,13 @@ class _IceBreakState extends State<IceBreak> {
     setState(() => _isRecording = true);
   }
 
+  /// ノイズメーターのサンプリングを停止
+  void stop() {
+    _noiseSubscription?.cancel();
+    setState(() => _isRecording = false);
+  }
+
+  /// トークテーマの読み込み
   Future<void> _loadTheme() async {
     String jsonString = await rootBundle.loadString('assets/topics.json');
     Map<String, dynamic> jsonData = json.decode(jsonString);
@@ -74,17 +83,12 @@ class _IceBreakState extends State<IceBreak> {
     });
   }
 
-  /// ノイズメーターのサンプリングを停止
-  void stop() {
-    _noiseSubscription?.cancel();
-    setState(() => _isRecording = false);
-  }
-
   void _startTimer() {
     if (_timer == null || !_timer!.isActive) {
       _timer = Timer.periodic(Duration(seconds: 1), (timer) {
         setState(() {
-          _seconds++;
+          _exciteSeconds++; // 盛り上がり判定の秒数の加算
+          _score++; // スコアの加算
         });
       });
     }
@@ -93,7 +97,7 @@ class _IceBreakState extends State<IceBreak> {
   void _stopTimer() {
     _timer?.cancel();
     _timer = null;
-    _seconds = 0;
+    _exciteSeconds = 0;
   }
 
   Color changeBackground() {
@@ -104,7 +108,7 @@ class _IceBreakState extends State<IceBreak> {
       // 音が一定のdBより大きい
       _startTimer();
 
-      if (_seconds >= 5) {
+      if (_exciteSeconds >= 5) {
         // 一定のdBより大きい状態が5秒以上続く
         return Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC);
       }
@@ -118,7 +122,7 @@ class _IceBreakState extends State<IceBreak> {
     if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
       // 音が一定のdBより大きい
 
-      if (_seconds >= 5) {
+      if (_exciteSeconds >= 5) {
         // 一定のdBより大きい状態が5秒以上続く
         return GestureDetector(
           child: SvgPicture.asset(

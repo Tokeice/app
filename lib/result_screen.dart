@@ -6,6 +6,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'main.dart';
 
 class ResultScreen extends StatelessWidget {
+
+  ResultScreen(this._score);
+  int _score;
+  
+  String getScore() {
+    String minutesStr = (_score ~/ 60).toString().padLeft(2, ' ');
+    String secondsSrt = (_score % 60).toString().padLeft(2, '0');
+
+    return '${minutesStr}分${secondsSrt}秒';    
+  }
+  
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -18,7 +29,7 @@ class ResultScreen extends StatelessWidget {
           Container(
             child: Column(children: [
               Text(
-                '00分00秒',
+                getScore(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: screenWidth * 0.1,
