@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'type/Direction.dart';
 
 class IceBreak extends StatefulWidget {
   @override
@@ -106,19 +106,19 @@ class _IceBreakState extends State<IceBreak> {
       return Colors.white;
     } else if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
       // 音が一定のdBより大きい
-      _startTimer();
+      // _startTimer();
 
       if (_exciteSeconds >= 5) {
         // 一定のdBより大きい状態が5秒以上続く
         return Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC);
       }
     } else {
-      _stopTimer();
+      // _stopTimer();
     }
     return Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2);
   }
 
-  GestureDetector changeEndBottun(double screenWidth) {
+  GestureDetector changeEndButton(double screenWidth) {
     if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
       // 音が一定のdBより大きい
 
@@ -154,6 +154,79 @@ class _IceBreakState extends State<IceBreak> {
     );
   }
 
+  /// 吹き出し
+  Widget speechBubbleWidget(BuildContext context, Direction direction, String text) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return
+      Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SvgPicture.asset(
+              'images/speech_bubble.svg',
+              width: screenWidth * 0.8,
+            ),
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: screenWidth * 0.08,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ])
+      );
+  }
+
+  /// キャラクターと吹き出し
+  /// direction: キャラクターの向き
+  Widget directionCharacterSpeechWidget(BuildContext context, Direction direction, String text) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    Alignment alignment = Alignment.bottomCenter;
+    double angle = 0;
+    double translateY = screenWidth * 0.165;
+
+    switch (direction) {
+      case Direction.top:
+        alignment = Alignment.topCenter;
+        angle = 3.14159;
+        break;
+      case Direction.bottom:
+        alignment = Alignment.bottomCenter;
+        angle = 0;
+        break;
+      case Direction.left:
+        alignment = Alignment.centerRight;
+        angle = 3.14159 / 2;
+        break;
+      case Direction.right:
+        alignment = Alignment.centerLeft;
+        angle = -3.14159 / 2;
+        break;
+    }
+
+    return
+      Align(
+      alignment: alignment,
+      child: Transform.rotate(
+        angle: angle,
+        child: Transform.translate(
+          offset: Offset(0, translateY),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              speechBubbleWidget(context, direction, text),
+              SvgPicture.asset(
+                'images/character_normal.svg',
+                width: screenWidth * 0.5,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -163,22 +236,8 @@ class _IceBreakState extends State<IceBreak> {
         children: [
           Align(
               alignment: Alignment.topRight,
-              child: changeEndBottun(screenWidth)),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.all(25),
-                child: Column(children: [
-                  Container(
-                    child: Text('Theme: $theme',
-                        style: TextStyle(fontSize: 25, color: Colors.black)),
-                    margin: EdgeInsets.only(top: 20),
-                  ),
-                ]),
-              ),
-            ],
-          ),
+              child: changeEndButton(screenWidth)),
+          directionCharacterSpeechWidget(context, Direction.left, 'ねぇ、好きな食べ物を教えてよ！'),
         ],
       )),
       backgroundColor: changeBackground(),
