@@ -21,7 +21,7 @@ class ResultScreenState extends State<ResultScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Score(screenWidth: screenWidth, score: widget.score), // スコアの
+            Score(screenWidth: screenWidth, score: widget.score), // スコア
             ScoreScreenCharacter(screenWidth: screenWidth), // キャラクターと吹き出し
             TitleButton(screenWidth: screenWidth), // タイトルに戻るボタン
           ],

@@ -20,10 +20,9 @@ class TitleButton extends StatelessWidget {
           );
         },
         child: SvgPicture.asset(
-            'images/button_back_to_title.svg',
-            width: screenWidth * 0.8,
-          ),
-        
+          'images/button_back_to_title.svg',
+          width: screenWidth * 0.8,
+        ),
     );
   }
 }
