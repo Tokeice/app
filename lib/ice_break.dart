@@ -252,18 +252,6 @@ class _IceBreakState extends State<IceBreak> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Center(
-          child: Stack(
-        children: [
-          Align(
-              alignment: Alignment.topRight,
-              child: changeEndButton(screenWidth)),
-          directionCharacterSpeechWidget(context, Direction.left, theme),
-
   Column selfIntroArrow(double screenWidth) {
     return Column(
       children: [
@@ -328,7 +316,7 @@ class _IceBreakState extends State<IceBreak> {
         children: [
           Align(
             alignment: Alignment.topRight,
-            child: changeEndBottun(screenWidth)),
+            child: changeEndButton(screenWidth)),
           Container(
             child: Align(
               alignment: Alignment.bottomCenter,
