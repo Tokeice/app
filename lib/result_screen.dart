@@ -63,43 +63,25 @@ class ResultScreen extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            child: Center(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                  SizedBox(
-                    child: GestureDetector(
-                      child: SvgPicture.asset(
-                        'images/button_back_to_title.svg',
-                        width: screenWidth * 0.8,
-                      ),
-                    )
+          Center(
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TitleScreen()),
+                );
+              },
+              child: 
+              SizedBox(
+                child: GestureDetector(
+                  child: SvgPicture.asset(
+                    'images/button_back_to_title.svg',
+                    width: screenWidth * 0.8,
                   ),
-                  Positioned(
-                    child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => TitleScreen()),
-                      );
-                    },
-                    child: Text(
-                      'タイトルにもどる',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.08,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    )
-                  )
-            ])),
-          )
+                )
+              ),
+            ),
+          ),
         ],
       ),
     ));
