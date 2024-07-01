@@ -5,11 +5,7 @@ import 'widget/description_image.dart';
 import 'widget/app_title.dart';
 
 
-// void main() => runApp(MyApp());
-void main() {
-  debugPaintSizeEnabled = true;
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
