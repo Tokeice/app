@@ -23,7 +23,7 @@ class AppTitle extends StatelessWidget {
         Positioned(
           child: SvgPicture.asset(
             'images/app_name.svg',
-            width: screenWidth * 0.9,
+            width: screenWidth,
           ),
         )
       ],

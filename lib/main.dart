@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'widget/start_button.dart';
 import 'widget/description_image.dart';
 import 'widget/app_title.dart';
