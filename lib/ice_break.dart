@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'type/Direction.dart';
 
 class IceBreak extends StatefulWidget {
   @override
@@ -117,7 +118,7 @@ class _IceBreakState extends State<IceBreak> {
     return Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2);
   }
 
-  GestureDetector changeEndBottun(double screenWidth) {
+  GestureDetector changeEndButton(double screenWidth) {
     if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
       // 音が一定のdBより大きい
 
@@ -150,6 +151,104 @@ class _IceBreakState extends State<IceBreak> {
           MaterialPageRoute(builder: (context) => ResultScreen(_score)),
         );
       },
+    );
+  }
+
+  /// 吹き出し
+  Widget speechBubbleWidget(BuildContext context, Direction direction, String text) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    
+    double scaleX = 1.0;
+    double scaleY = 1.0;
+    switch (direction) {
+      case Direction.top:
+      case Direction.bottom:
+        scaleX = 1.0;
+        scaleY = 1.3;
+        break;
+      case Direction.left:
+      case Direction.right:
+        scaleX = 1.4;
+        scaleY = 1.0;
+        break;
+    }
+
+    return
+      Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Transform.scale(
+              scaleX: scaleX,
+              scaleY: scaleY,
+              child: SvgPicture.asset(
+                'images/speech_bubble.svg',
+              ),
+            ),
+            SizedBox(
+              width: screenWidth * 0.7,
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.08,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ])
+      );
+  }
+
+  /// キャラクターと吹き出し
+  /// direction: キャラクターの向き
+  /// text: 吹き出しのテキスト
+  Widget directionCharacterSpeechWidget(BuildContext context, Direction direction, String text) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    Alignment alignment = Alignment.bottomCenter;
+    double angle = 0;
+    double translateY = screenWidth * 0.173;
+
+    switch (direction) {
+      case Direction.top:
+        alignment = Alignment.topCenter;
+        angle = 3.14159;
+        break;
+      case Direction.bottom:
+        alignment = Alignment.bottomCenter;
+        angle = 0;
+        break;
+      case Direction.left:
+        alignment = Alignment.centerRight;
+        angle = 3.14159 / 2;
+        break;
+      case Direction.right:
+        alignment = Alignment.centerLeft;
+        angle = -3.14159 / 2;
+        break;
+    }
+
+    return
+      Align(
+      alignment: alignment,
+      child: Transform.rotate(
+        angle: angle,
+        child: Transform.translate(
+          offset: Offset(0, translateY),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              speechBubbleWidget(context, direction, text),
+              if (direction == Direction.top || direction == Direction.bottom)
+                SizedBox(height: screenWidth * 0.1),
+              SvgPicture.asset(
+                'images/character_normal.svg',
+                width: screenWidth * 0.5,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -217,7 +316,7 @@ class _IceBreakState extends State<IceBreak> {
         children: [
           Align(
             alignment: Alignment.topRight,
-            child: changeEndBottun(screenWidth)),
+            child: changeEndButton(screenWidth)),
           Container(
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -229,7 +328,9 @@ class _IceBreakState extends State<IceBreak> {
                 ],
               ),
             )
-          )
+          ),
+          // 以下のコードでキャラクターとトークテーマを表示
+          // directionCharacterSpeechWidget(context, Direction.left, theme),
         ],
       ),
       backgroundColor: changeBackground(),
