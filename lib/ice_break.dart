@@ -328,8 +328,9 @@ class _IceBreakState extends State<IceBreak> {
                 ],
               ),
             )
-          )
-
+          ),
+          // 以下のコードでキャラクターとトークテーマを表示
+          // directionCharacterSpeechWidget(context, Direction.left, theme),
         ],
       ),
       backgroundColor: changeBackground(),
