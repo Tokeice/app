@@ -323,20 +323,20 @@ class _IceBreakState extends State<IceBreak> {
           Align(
             alignment: Alignment.topRight,
             child: changeEndButton(screenWidth)),
-          // Container(
-          //   child: Align(
-          //     alignment: Alignment.bottomCenter,
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.end,
-          //       children: [
-          //         selfIntroArrow(screenWidth),
-          //         selfIntroCharactor(screenWidth),
-          //       ],
-          //     ),
-          //   )
-          // ),
+          Container(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  selfIntroArrow(screenWidth),
+                  selfIntroCharactor(screenWidth),
+                ],
+              ),
+            )
+          ),
           // 以下のコードでキャラクターとトークテーマを表示
-          directionCharacterSpeechWidget(context, Direction.left, theme),
+          // directionCharacterSpeechWidget(context, Direction.left, theme),
         ],
       ),
       backgroundColor: changeBackground(),
