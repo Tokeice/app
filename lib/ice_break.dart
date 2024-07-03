@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'type/Direction.dart';
+
+import 'widget/icebreak_character.dart';
+
 
 class IceBreak extends StatefulWidget {
   @override
@@ -154,160 +156,6 @@ class _IceBreakState extends State<IceBreak> {
     );
   }
 
-  /// 吹き出し
-  Widget speechBubbleWidget(BuildContext context, Direction direction, String text) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    
-    double scaleX = 1.0;
-    double scaleY = 1.0;
-    switch (direction) {
-      case Direction.top:
-      case Direction.bottom:
-        scaleX = 1.0;
-        scaleY = 1.3;
-        break;
-      case Direction.left:
-      case Direction.right:
-        scaleX = 1.4;
-        scaleY = 1.0;
-        break;
-    }
-
-    return
-      Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Transform.scale(
-              scaleX: scaleX,
-              scaleY: scaleY,
-              child: SvgPicture.asset(
-                'images/speech_bubble.svg',
-              ),
-            ),
-            SizedBox(
-              width: screenWidth * 0.7,
-              child: Text(
-                text,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: screenWidth * 0.08,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ])
-      );
-  }
-
-  /// キャラクターと吹き出し
-  /// direction: キャラクターの向き
-  /// text: 吹き出しのテキスト
-  Widget directionCharacterSpeechWidget(BuildContext context, Direction direction, String text) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    Alignment alignment = Alignment.bottomCenter;
-    double angle = 0;
-    double translateY = screenWidth * 0.173;
-
-    switch (direction) {
-      case Direction.top:
-        alignment = Alignment.topCenter;
-        angle = 3.14159;
-        break;
-      case Direction.bottom:
-        alignment = Alignment.bottomCenter;
-        angle = 0;
-        break;
-      case Direction.left:
-        alignment = Alignment.centerRight;
-        angle = 3.14159 / 2;
-        break;
-      case Direction.right:
-        alignment = Alignment.centerLeft;
-        angle = -3.14159 / 2;
-        break;
-    }
-
-    return
-      Align(
-      alignment: alignment,
-      child: Transform.rotate(
-        angle: angle,
-        child: Transform.translate(
-          offset: Offset(0, translateY),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              speechBubbleWidget(context, direction, text),
-              if (direction == Direction.top || direction == Direction.bottom)
-                SizedBox(height: screenWidth * 0.1),
-              SvgPicture.asset(
-                'images/character_normal.svg',
-                width: screenWidth * 0.5,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Column selfIntroArrow(double screenWidth) {
-    return Column(
-      children: [
-        Text(
-          '時計回りに',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: screenWidth * 0.1,
-            color: Colors.white),
-        ),
-        SvgPicture.asset(
-          'images/arrow_self_introduction.svg',
-          width: screenWidth * 0.5,
-        ),
-      ],
-    );
-  }
-
-  Transform selfIntroCharactor(double screenWidth) {
-    double speechWidth = screenWidth * 0.8;
-    double characterWidth = screenWidth * 0.5;
-    return Transform.translate(
-      offset: Offset(0, screenWidth * 0.13),
-      child: Column(
-        children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              SvgPicture.asset(
-                'images/speech_bubble_vertical_screen.svg',
-                width: speechWidth,
-              ),
-              Container(
-                padding: EdgeInsets.only(bottom: speechWidth * 0.05),
-                width: speechWidth,
-                child: Text(
-                  '君から順番に\n自己紹介して！',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: screenWidth * 0.1,
-                    color: Colors.black
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SvgPicture.asset(
-            'images/character_normal.svg',
-            width: characterWidth,
-          ),
-        ],
-      )
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -315,22 +163,9 @@ class _IceBreakState extends State<IceBreak> {
       body: Stack(
         children: [
           Align(
-            alignment: Alignment.topRight,
-            child: changeEndButton(screenWidth)),
-          Container(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  selfIntroArrow(screenWidth),
-                  selfIntroCharactor(screenWidth),
-                ],
-              ),
-            )
-          ),
-          // 以下のコードでキャラクターとトークテーマを表示
-          // directionCharacterSpeechWidget(context, Direction.left, theme),
+              alignment: Alignment.topRight,
+              child: changeEndButton(screenWidth)),
+          IcebreakCharacter(screenWidth: screenWidth)
         ],
       ),
       backgroundColor: changeBackground(),
