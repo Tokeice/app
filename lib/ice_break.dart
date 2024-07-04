@@ -127,9 +127,12 @@ class _IceBreakState extends State<IceBreak> {
       if (_exciteSeconds >= 5) {
         // 一定のdBより大きい状態が5秒以上続く
         return GestureDetector(
-          child: SvgPicture.asset(
-            'images/button_end_excite.svg',
-            width: screenWidth * 0.4,
+          child: Transform.translate(
+            offset: Offset(screenWidth * 0.1, -screenWidth * 0.1),
+            child: SvgPicture.asset(
+              'images/button_end_excite.svg',
+              width: screenWidth * 0.45,
+            )
           ),
           onTap: () {
             stop();
@@ -142,9 +145,12 @@ class _IceBreakState extends State<IceBreak> {
       }
     }
     return GestureDetector(
-      child: SvgPicture.asset(
-        'images/button_end_silent.svg',
-        width: screenWidth * 0.4,
+      child: Transform.translate(
+        offset: Offset(screenWidth * 0.05, -screenWidth * 0.02),
+        child: SvgPicture.asset(
+          'images/button_end_silent.svg',
+          width: screenWidth * 0.35,
+        )
       ),
       onTap: () {
         stop();
