@@ -87,7 +87,7 @@ class _IceBreakState extends State<IceBreak> {
     String jsonString = await rootBundle.loadString('assets/topics.json');
     Map<String, dynamic> jsonData = json.decode(jsonString);
     setState(() {
-      _theme = jsonData['_theme'];
+      _theme = jsonData['theme'];
     });
   }
 
