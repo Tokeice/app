@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:test_nm/widget/self_intro_arrow.dart';
-import 'package:test_nm/widget/self_intro_character.dart';
-import 'package:test_nm/widget/direction_character_speech_widget.dart';
+import 'package:test_nm/widget/direction_character_speech.dart';
 import 'package:test_nm/type/Direction.dart';
 
-class IcebreakCharacter extends StatelessWidget {
-  const IcebreakCharacter({
+class IceBreakCharacter extends StatelessWidget {
+  const IceBreakCharacter({
     super.key,
     required this.screenWidth,
   });
@@ -27,7 +25,7 @@ class IcebreakCharacter extends StatelessWidget {
     //   ),
     // );
     // 以下のコードでキャラクターとトークテーマを表示
-    return DirectionCharacterSpeechWidget(
+    return DirectionCharacterSpeech(
         direction: Direction.left, text: theme, screenWidth: screenWidth);
   }
 }

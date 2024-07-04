@@ -13,16 +13,16 @@ class TitleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => TitleScreen()),
-          );
-        },
-        child: SvgPicture.asset(
-          'images/button_back_to_title.svg',
-          width: screenWidth * 0.8,
-        ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TitleScreen()),
+        );
+      },
+      child: SvgPicture.asset(
+        'images/button_back_to_title.svg',
+        width: screenWidth * 0.8,
+      ),
     );
   }
 }

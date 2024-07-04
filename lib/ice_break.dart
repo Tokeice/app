@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-import 'widget/icebreak_character.dart';
-
+import 'widget/end_button.dart';
+import 'widget/direction_character_speech.dart';
+import 'type/IceBreakState.dart';
+import 'package:test_nm/type/Direction.dart';
 
 class IceBreak extends StatefulWidget {
   @override
@@ -25,20 +26,24 @@ class _IceBreakState extends State<IceBreak> {
   int _score = 0; // スコアの秒数カウント用
   Timer? _timer; // 盛り上がり判定の秒数カウント用タイマー
   final int _threshold = 60; // 盛り上がり判定の閾値(dB)
+  IceBreakState _state = IceBreakState.normal;
 
-  String theme = "Loading...";
+  String _theme = "Loading...";
 
   @override
   void initState() {
     super.initState();
     _loadTheme();
-    start();
+    _startNoiseMeter();
+    _startTimer();
     _score = 0;
+    _state = IceBreakState.normal;
   }
 
   @override
   void dispose() {
-    _noiseSubscription?.cancel();
+    _stopNoiseMeter();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -46,8 +51,9 @@ class _IceBreakState extends State<IceBreak> {
       setState(() => _latestReading = noiseReading);
 
   void onError(Object error) {
-    print(error);
-    stop();
+    debugPrint(error.toString());
+    _stopNoiseMeter();
+    _stopTimer();
   }
 
   /// マイクの使用許可を確認する関数
@@ -58,7 +64,7 @@ class _IceBreakState extends State<IceBreak> {
       await Permission.microphone.request();
 
   /// ノイズメーターのサンプリングを開始
-  Future<void> start() async {
+  Future<void> _startNoiseMeter() async {
     // ノイズメーターの初期化
     noiseMeter ??= NoiseMeter();
 
@@ -71,7 +77,7 @@ class _IceBreakState extends State<IceBreak> {
   }
 
   /// ノイズメーターのサンプリングを停止
-  void stop() {
+  void _stopNoiseMeter() {
     _noiseSubscription?.cancel();
     setState(() => _isRecording = false);
   }
@@ -81,84 +87,57 @@ class _IceBreakState extends State<IceBreak> {
     String jsonString = await rootBundle.loadString('assets/topics.json');
     Map<String, dynamic> jsonData = json.decode(jsonString);
     setState(() {
-      theme = jsonData['theme'];
+      _theme = jsonData['_theme'];
     });
   }
 
+  /// タイマーの開始
   void _startTimer() {
     if (_timer == null || !_timer!.isActive) {
-      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-        setState(() {
-          _exciteSeconds++; // 盛り上がり判定の秒数の加算
-          _score++; // スコアの加算
-        });
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
+          // 音量が閾値より大きい
+          setState(() {
+            _exciteSeconds++; // 盛り上がり判定の秒数の加算
+            _score++; // スコアの秒数の加算
+          });
+        } else {
+          setState(() {
+            _exciteSeconds = 0; // 盛り上がり判定の秒数のリセット
+          });
+        }
+
+        if (_isRecording == false) {
+          setState(() {
+            _state = IceBreakState.normal;
+          });
+        } else if (_exciteSeconds >= 5) {
+          setState(() {
+            _state = IceBreakState.excite;
+          });
+        } else {
+          setState(() {
+            _state = IceBreakState.silent;
+          });
+        }
       });
     }
   }
 
+  /// タイマーの停止
   void _stopTimer() {
     _timer?.cancel();
     _timer = null;
     _exciteSeconds = 0;
   }
 
-  Color changeBackground() {
-    if (!_isRecording) {
-      // 録音フラグがfalseの場合
-      return Colors.white;
-    } else if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
-      // 音が一定のdBより大きい
-      _startTimer();
-
-      if (_exciteSeconds >= 5) {
-        // 一定のdBより大きい状態が5秒以上続く
-        return Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC);
-      }
-    } else {
-      _stopTimer();
-    }
-    return Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2);
-  }
-
-  GestureDetector changeEndButton(double screenWidth) {
-    if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
-      // 音が一定のdBより大きい
-
-      if (_exciteSeconds >= 5) {
-        // 一定のdBより大きい状態が5秒以上続く
-        return GestureDetector(
-          child: Transform.translate(
-            offset: Offset(screenWidth * 0.1, -screenWidth * 0.1),
-            child: SvgPicture.asset(
-              'images/button_end_excite.svg',
-              width: screenWidth * 0.45,
-            )
-          ),
-          onTap: () {
-            stop();
-            Navigator.push(
-              context,
-               MaterialPageRoute(builder: (context) => ResultScreen(score: _score)),
-            );
-          },
-        );
-      }
-    }
-    return GestureDetector(
-      child: Transform.translate(
-        offset: Offset(screenWidth * 0.05, -screenWidth * 0.02),
-        child: SvgPicture.asset(
-          'images/button_end_silent.svg',
-          width: screenWidth * 0.35,
-        )
-      ),
-      onTap: () {
-        stop();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ResultScreen(score: _score,)),
-        );
-      },
+ /// おわるボタンをタップしたときの処理
+  void onTapEndButton() {
+    _stopNoiseMeter();
+    _stopTimer();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ResultScreen(score: _score)),
     );
   }
 
@@ -166,15 +145,18 @@ class _IceBreakState extends State<IceBreak> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Stack(
-        children: [
-          Align(
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        color: _state == IceBreakState.excite ? const Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC) : _state == IceBreakState.silent ? const Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2) : Colors.white,
+        child: Stack(
+          children: [
+            Align(
               alignment: Alignment.topRight,
-              child: changeEndButton(screenWidth)),
-          IcebreakCharacter(screenWidth: screenWidth)
-        ],
-      ),
-      backgroundColor: changeBackground(),
+              child: EndButton(screenWidth: screenWidth, state: _state, onTap: onTapEndButton )),
+            DirectionCharacterSpeech(direction: Direction.left, text: _theme, screenWidth: screenWidth)
+          ],
+        ),
+      )
     );
   }
 }
