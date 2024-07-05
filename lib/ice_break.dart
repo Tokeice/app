@@ -150,9 +150,18 @@ class _IceBreakState extends State<IceBreak> {
         color: _state == IceBreakState.excite ? const Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC) : _state == IceBreakState.silent ? const Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2) : Colors.white,
         child: Stack(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: EndButton(screenWidth: screenWidth, state: _state, onTap: onTapEndButton )),
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: EndButton(screenWidth: screenWidth, state: IceBreakState.excite, onTap: onTapEndButton, isActive: _state == IceBreakState.excite),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: EndButton(screenWidth: screenWidth, state: IceBreakState.silent, onTap: onTapEndButton, isActive: _state != IceBreakState.excite),
+                ),
+              ],
+            ),
             DirectionCharacterSpeech(direction: Direction.left, text: _theme, screenWidth: screenWidth)
           ],
         ),
