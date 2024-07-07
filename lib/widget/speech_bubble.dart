@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:test_nm/type/Direction.dart';
 import 'package:flutter_svg/svg.dart';
+import 'animated_text.dart';
 
 class SpeechBubble extends StatelessWidget {
   const SpeechBubble({
     super.key,
     required this.direction,
     required this.text,
+    required this.isActive,
   });
 
   final Direction direction;
   final String text;
+  final bool isActive;
 
   /// 吹き出し
   @override
@@ -44,13 +47,14 @@ class SpeechBubble extends StatelessWidget {
           ),
           SizedBox(
             width: screenWidth * 0.7,
-            child: Text(
-              text,
+            child: AnimatedText(
+              text: text,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: screenWidth * 0.08,
                 fontWeight: FontWeight.bold,
               ),
+              isActive: isActive,
             ),
           ),
         ]

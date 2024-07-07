@@ -104,7 +104,7 @@ class DirectionCharacterSpeechState extends State<DirectionCharacterSpeech> with
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SpeechBubble(direction: widget.direction, text: widget.text),
+                SpeechBubble(direction: widget.direction, text: widget.text, isActive: widget.isActive),
                 if (widget.direction == Direction.top || widget.direction == Direction.bottom)
                   SizedBox(height: widget.screenWidth * 0.1),
                 SvgPicture.asset(
