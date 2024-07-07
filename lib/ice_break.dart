@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:math';
 
 import 'widget/end_button.dart';
-import 'widget/direction_character_speech.dart';
+import 'widget/character_speech.dart';
 import 'type/IceBreakState.dart';
 import 'package:test_nm/type/Direction.dart';
 
@@ -27,6 +28,7 @@ class _IceBreakState extends State<IceBreak> {
   Timer? _timer; // 盛り上がり判定の秒数カウント用タイマー
   final int _threshold = 60; // 盛り上がり判定の閾値(dB)
   IceBreakState _state = IceBreakState.normal;
+  Direction _direction = Direction.values[Random().nextInt(Direction.values.length)];
 
   String _theme = "Loading...";
 
@@ -120,6 +122,12 @@ class _IceBreakState extends State<IceBreak> {
             _state = IceBreakState.silent;
           });
         }
+
+        // TODO: 話題の変更に合わせてキャラクターの向きを変えるように変更する
+        if (_exciteSeconds % 10 == 0) {
+          _direction = Direction.values[Random().nextInt(Direction.values.length)];
+        }
+
       });
     }
   }
@@ -162,7 +170,7 @@ class _IceBreakState extends State<IceBreak> {
                 ),
               ],
             ),
-            DirectionCharacterSpeech(direction: Direction.left, text: _theme, screenWidth: screenWidth)
+            CharacterSpeech(direction: _direction, text: _theme, screenWidth: screenWidth)
           ],
         ),
       )

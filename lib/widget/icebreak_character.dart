@@ -26,6 +26,7 @@ class IceBreakCharacter extends StatelessWidget {
     // );
     // 以下のコードでキャラクターとトークテーマを表示
     return DirectionCharacterSpeech(
-        direction: Direction.left, text: theme, screenWidth: screenWidth);
+      direction: Direction.left, text: theme, screenWidth: screenWidth, isActive: true
+    );
   }
 }

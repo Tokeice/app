@@ -35,24 +35,26 @@ class SpeechBubble extends StatelessWidget {
 
     return Center(
         child: Stack(alignment: Alignment.center, children: [
-      Transform.scale(
-        scaleX: scaleX,
-        scaleY: scaleY,
-        child: SvgPicture.asset(
-          'images/speech_bubble.svg',
-        ),
-      ),
-      SizedBox(
-        width: screenWidth * 0.7,
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: screenWidth * 0.08,
-            fontWeight: FontWeight.bold,
+          Transform.scale(
+            scaleX: scaleX,
+            scaleY: scaleY,
+            child: SvgPicture.asset(
+              'images/speech_bubble.svg',
+            ),
           ),
-        ),
+          SizedBox(
+            width: screenWidth * 0.7,
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: screenWidth * 0.08,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ]
       ),
-    ]));
+    );
   }
 }
