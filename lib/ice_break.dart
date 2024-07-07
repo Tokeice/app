@@ -124,7 +124,7 @@ class _IceBreakState extends State<IceBreak> {
         }
 
         // TODO: 話題の変更に合わせてキャラクターの向きを変えるように変更する
-        if (_exciteSeconds % 10 == 0) {
+        if (_exciteSeconds != 0 && _exciteSeconds % 10 == 0) {
           _direction = Direction.values[Random().nextInt(Direction.values.length)];
         }
 
