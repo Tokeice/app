@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
+import 'package:test_nm/type/Direction.dart';
+import 'dart:math';
 import 'widget/icebreak_character.dart';
-
+import 'utils/select_topics.dart';
 
 class IceBreak extends StatefulWidget {
   @override
@@ -25,14 +28,17 @@ class _IceBreakState extends State<IceBreak> {
   int _score = 0; // スコアの秒数カウント用
   Timer? _timer; // 盛り上がり判定の秒数カウント用タイマー
   final int _threshold = 60; // 盛り上がり判定の閾値(dB)
-
-  String theme = "Loading...";
+  SelectTopic selecter = SelectTopic(jsonPath: 'assets/topics.json');
+  String topic ='Loading...';
+  bool isSelected = false;
+  late Direction direction;
 
   @override
   void initState() {
     super.initState();
-    _loadTheme();
+    selecter.loadTheme();
     start();
+    changeDirection();
     _score = 0;
   }
 
@@ -76,15 +82,6 @@ class _IceBreakState extends State<IceBreak> {
     setState(() => _isRecording = false);
   }
 
-  /// トークテーマの読み込み
-  Future<void> _loadTheme() async {
-    String jsonString = await rootBundle.loadString('assets/topics.json');
-    Map<String, dynamic> jsonData = json.decode(jsonString);
-    setState(() {
-      theme = jsonData['theme'];
-    });
-  }
-
   void _startTimer() {
     if (_timer == null || !_timer!.isActive) {
       _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -102,6 +99,11 @@ class _IceBreakState extends State<IceBreak> {
     _exciteSeconds = 0;
   }
 
+  void changeDirection(){
+    int rand = Random().nextInt(4); 
+    direction = Direction.values[rand];
+  }
+
   Color changeBackground() {
     if (!_isRecording) {
       // 録音フラグがfalseの場合
@@ -112,9 +114,15 @@ class _IceBreakState extends State<IceBreak> {
 
       if (_exciteSeconds >= 5) {
         // 一定のdBより大きい状態が5秒以上続く
+        isSelected = false;
         return Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC);
       }
     } else {
+      if (!isSelected) {
+        topic = selecter.select();
+        changeDirection();
+        isSelected = true;
+      }
       _stopTimer();
     }
     return Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2);
@@ -128,17 +136,17 @@ class _IceBreakState extends State<IceBreak> {
         // 一定のdBより大きい状態が5秒以上続く
         return GestureDetector(
           child: Transform.translate(
-            offset: Offset(screenWidth * 0.1, -screenWidth * 0.1),
-            child: SvgPicture.asset(
-              'images/button_end_excite.svg',
-              width: screenWidth * 0.45,
-            )
-          ),
+              offset: Offset(screenWidth * 0.1, -screenWidth * 0.1),
+              child: SvgPicture.asset(
+                'images/button_end_excite.svg',
+                width: screenWidth * 0.45,
+              )),
           onTap: () {
             stop();
             Navigator.push(
               context,
-               MaterialPageRoute(builder: (context) => ResultScreen(score: _score)),
+              MaterialPageRoute(
+                  builder: (context) => ResultScreen(score: _score)),
             );
           },
         );
@@ -146,17 +154,19 @@ class _IceBreakState extends State<IceBreak> {
     }
     return GestureDetector(
       child: Transform.translate(
-        offset: Offset(screenWidth * 0.05, -screenWidth * 0.02),
-        child: SvgPicture.asset(
-          'images/button_end_silent.svg',
-          width: screenWidth * 0.35,
-        )
-      ),
+          offset: Offset(screenWidth * 0.05, -screenWidth * 0.02),
+          child: SvgPicture.asset(
+            'images/button_end_silent.svg',
+            width: screenWidth * 0.35,
+          )),
       onTap: () {
         stop();
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ResultScreen(score: _score,)),
+          MaterialPageRoute(
+              builder: (context) => ResultScreen(
+                    score: _score,
+                  )),
         );
       },
     );
@@ -171,10 +181,10 @@ class _IceBreakState extends State<IceBreak> {
           Align(
               alignment: Alignment.topRight,
               child: changeEndButton(screenWidth)),
-          IcebreakCharacter(screenWidth: screenWidth)
+          IcebreakCharacter(screenWidth: screenWidth, theme: topic, direction: direction)
         ],
       ),
-      backgroundColor: changeBackground(),
+      backgroundColor: changeBackground()
     );
   }
 }
