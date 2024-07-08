@@ -11,6 +11,8 @@ import 'widget/end_button.dart';
 import 'widget/character_speech.dart';
 import 'type/IceBreakState.dart';
 import 'package:test_nm/type/Direction.dart';
+import 'widget/icebreak_character.dart';
+import 'utils/select_topics.dart';
 
 class IceBreak extends StatefulWidget {
   @override
@@ -18,26 +20,30 @@ class IceBreak extends StatefulWidget {
 }
 
 class _IceBreakState extends State<IceBreak> {
+  // ノイズメーター関連の変数
   bool _isRecording = false;
   NoiseReading? _latestReading;
   StreamSubscription<NoiseReading>? _noiseSubscription;
   NoiseMeter? noiseMeter;
 
   int _exciteSeconds = 0; // 盛り上がり判定の秒数カウント用
-  int _score = 0; // スコアの秒数カウント用
-  Timer? _timer; // 盛り上がり判定の秒数カウント用タイマー
+  int _score = 0; // スコア
+  Timer? _timer; // タイマー
   final int _threshold = 60; // 盛り上がり判定の閾値(dB)
   IceBreakState _state = IceBreakState.normal;
-  Direction _direction = Direction.values[Random().nextInt(Direction.values.length)];
 
   String _theme = "Loading...";
+  SelectTopic selecter = SelectTopic(jsonPath: 'assets/topics.json');
+  String topic ='Loading...';
+  bool isSelected = false;
+  late Direction direction;
 
   @override
   void initState() {
     super.initState();
-    _loadTheme();
     _startNoiseMeter();
     _startTimer();
+    selecter.loadTheme();
     _score = 0;
     _state = IceBreakState.normal;
   }
@@ -84,15 +90,6 @@ class _IceBreakState extends State<IceBreak> {
     setState(() => _isRecording = false);
   }
 
-  /// トークテーマの読み込み
-  Future<void> _loadTheme() async {
-    String jsonString = await rootBundle.loadString('assets/topics.json');
-    Map<String, dynamic> jsonData = json.decode(jsonString);
-    setState(() {
-      _theme = jsonData['theme'];
-    });
-  }
-
   /// タイマーの開始
   void _startTimer() {
     if (_timer == null || !_timer!.isActive) {
@@ -123,9 +120,9 @@ class _IceBreakState extends State<IceBreak> {
           });
         }
 
-        // TODO: 話題の変更に合わせてキャラクターの向きを変えるように変更する
-        if (_exciteSeconds != 0 && _exciteSeconds % 10 == 0) {
-          _direction = Direction.values[Random().nextInt(Direction.values.length)];
+        if (_exciteSeconds % 10 == 0) {
+          int rand = Random().nextInt(4); 
+          direction = Direction.values[rand];
         }
 
       });
@@ -170,7 +167,7 @@ class _IceBreakState extends State<IceBreak> {
                 ),
               ],
             ),
-            CharacterSpeech(direction: _direction, text: _theme, screenWidth: screenWidth)
+            CharacterSpeech(direction: direction, text: _theme, screenWidth: screenWidth)
           ],
         ),
       )
