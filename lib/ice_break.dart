@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'dart:math';
 
 import 'widget/end_button.dart';
 import 'widget/character_speech.dart';
 import 'type/IceBreakState.dart';
 import 'package:test_nm/type/Direction.dart';
-import 'widget/icebreak_character.dart';
 import 'utils/select_topics.dart';
 
 class IceBreak extends StatefulWidget {
@@ -21,22 +18,18 @@ class IceBreak extends StatefulWidget {
 
 class _IceBreakState extends State<IceBreak> {
   // ノイズメーター関連の変数
-  bool _isRecording = false;
   NoiseReading? _latestReading;
   StreamSubscription<NoiseReading>? _noiseSubscription;
   NoiseMeter? noiseMeter;
 
-  int _exciteSeconds = 0; // 盛り上がり判定の秒数カウント用
-  int _score = 0; // スコア
+  int _silentSeconds = 10; // 沈黙判定の秒数カウント用
+  late int _score; // スコア
   Timer? _timer; // タイマー
-  final int _threshold = 60; // 盛り上がり判定の閾値(dB)
-  IceBreakState _state = IceBreakState.normal;
+  final int _threshold = 80; // 盛り上がり判定の閾値(dB)
+  late IceBreakState _state;
 
-  String _theme = "Loading...";
   SelectTopic selecter = SelectTopic(jsonPath: 'assets/topics.json');
-  String topic ='Loading...';
-  bool isSelected = false;
-  late Direction direction;
+  Direction direction = Direction.left;
 
   @override
   void initState() {
@@ -81,13 +74,12 @@ class _IceBreakState extends State<IceBreak> {
 
     // ノイズメーターのサンプリングを開始
     _noiseSubscription = noiseMeter?.noise.listen(onData, onError: onError);
-    setState(() => _isRecording = true);
   }
 
   /// ノイズメーターのサンプリングを停止
   void _stopNoiseMeter() {
     _noiseSubscription?.cancel();
-    setState(() => _isRecording = false);
+    _noiseSubscription = null;
   }
 
   /// タイマーの開始
@@ -97,20 +89,16 @@ class _IceBreakState extends State<IceBreak> {
         if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
           // 音量が閾値より大きい
           setState(() {
-            _exciteSeconds++; // 盛り上がり判定の秒数の加算
             _score++; // スコアの秒数の加算
+            _silentSeconds = 0; // 沈黙判定の秒数のリセット
           });
         } else {
           setState(() {
-            _exciteSeconds = 0; // 盛り上がり判定の秒数のリセット
+            _silentSeconds++; // 沈黙判定の秒数の加算
           });
         }
 
-        if (_isRecording == false) {
-          setState(() {
-            _state = IceBreakState.normal;
-          });
-        } else if (_exciteSeconds >= 5) {
+        if (_silentSeconds == 0) {
           setState(() {
             _state = IceBreakState.excite;
           });
@@ -120,9 +108,12 @@ class _IceBreakState extends State<IceBreak> {
           });
         }
 
-        if (_exciteSeconds % 10 == 0) {
-          int rand = Random().nextInt(4); 
-          direction = Direction.values[rand];
+        if (10 <= _silentSeconds) {
+          direction = Direction.values[Random().nextInt(4)];
+          selecter.select();
+          setState(() {
+            _silentSeconds = 0;
+          });
         }
 
       });
@@ -133,7 +124,7 @@ class _IceBreakState extends State<IceBreak> {
   void _stopTimer() {
     _timer?.cancel();
     _timer = null;
-    _exciteSeconds = 0;
+    _silentSeconds = 0;
   }
 
  /// おわるボタンをタップしたときの処理
@@ -167,7 +158,7 @@ class _IceBreakState extends State<IceBreak> {
                 ),
               ],
             ),
-            CharacterSpeech(direction: direction, text: _theme, screenWidth: screenWidth)
+            CharacterSpeech(direction: direction, text: selecter.getTopic(), screenWidth: screenWidth)
           ],
         ),
       )
