@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
-import 'package:test_nm/type/Direction.dart';
-import 'dart:math';
-import 'widget/icebreak_character.dart';
+import 'widget/end_button.dart';
+import 'widget/character_speech.dart';
+import 'type/IceBreakState.dart';
 import 'utils/select_topics.dart';
+import 'utils/select_direction.dart';
 
 class IceBreak extends StatefulWidget {
   @override
@@ -19,32 +16,42 @@ class IceBreak extends StatefulWidget {
 }
 
 class _IceBreakState extends State<IceBreak> {
-  bool _isRecording = false;
+  // ノイズメーター関連の変数
   NoiseReading? _latestReading;
   StreamSubscription<NoiseReading>? _noiseSubscription;
   NoiseMeter? noiseMeter;
 
-  int _exciteSeconds = 0; // 盛り上がり判定の秒数カウント用
-  int _score = 0; // スコアの秒数カウント用
-  Timer? _timer; // 盛り上がり判定の秒数カウント用タイマー
-  final int _threshold = 60; // 盛り上がり判定の閾値(dB)
-  SelectTopic selecter = SelectTopic(jsonPath: 'assets/topics.json');
-  String topic ='Loading...';
-  bool isSelected = false;
-  late Direction direction;
+  int _silentSeconds = 0; // 沈黙判定の秒数カウント用
+  late int _score; // スコア
+  Timer? _timer; // タイマー
+  final int _threshold = 80; // 盛り上がり判定の閾値(dB)
+  late IceBreakState _state;
+
+  SelectTopic selector = SelectTopic(jsonPath: 'assets/topics.json');
+  SelectDirection direction = SelectDirection();
 
   @override
   void initState() {
     super.initState();
-    selecter.loadTheme();
-    start();
-    changeDirection();
-    _score = 0;
+    initialize();
+  }
+
+  Future<void> initialize() async {
+    await selector.loadTheme();
+    setState(() {
+      selector.select();
+      direction.select();
+      _score = 0;
+      _state = IceBreakState.normal;
+    });
+    _startNoiseMeter();
+    _startTimer();
   }
 
   @override
   void dispose() {
-    _noiseSubscription?.cancel();
+    _stopNoiseMeter();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -52,8 +59,9 @@ class _IceBreakState extends State<IceBreak> {
       setState(() => _latestReading = noiseReading);
 
   void onError(Object error) {
-    print(error);
-    stop();
+    debugPrint(error.toString());
+    _stopNoiseMeter();
+    _stopTimer();
   }
 
   /// マイクの使用許可を確認する関数
@@ -64,7 +72,7 @@ class _IceBreakState extends State<IceBreak> {
       await Permission.microphone.request();
 
   /// ノイズメーターのサンプリングを開始
-  Future<void> start() async {
+  Future<void> _startNoiseMeter() async {
     // ノイズメーターの初期化
     noiseMeter ??= NoiseMeter();
 
@@ -73,102 +81,66 @@ class _IceBreakState extends State<IceBreak> {
 
     // ノイズメーターのサンプリングを開始
     _noiseSubscription = noiseMeter?.noise.listen(onData, onError: onError);
-    setState(() => _isRecording = true);
   }
 
   /// ノイズメーターのサンプリングを停止
-  void stop() {
+  void _stopNoiseMeter() {
     _noiseSubscription?.cancel();
-    setState(() => _isRecording = false);
+    _noiseSubscription = null;
   }
 
+  /// タイマーの開始
   void _startTimer() {
     if (_timer == null || !_timer!.isActive) {
-      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-        setState(() {
-          _exciteSeconds++; // 盛り上がり判定の秒数の加算
-          _score++; // スコアの加算
-        });
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
+          // 音量が閾値より大きい
+          setState(() {
+            _score++; // スコアの秒数の加算
+            _silentSeconds = 0; // 沈黙判定の秒数のリセット
+          });
+        } else {
+          setState(() {
+            _silentSeconds++; // 沈黙判定の秒数の加算
+          });
+        }
+
+        if (_silentSeconds == 0) {
+          setState(() {
+            _state = IceBreakState.excite;
+          });
+        } else {
+          setState(() {
+            _state = IceBreakState.silent;
+          });
+        }
+
+        if (10 <= _silentSeconds) {
+          setState(() {
+            direction.select();
+            selector.select();
+            _silentSeconds = 0;
+          });
+        }
+
       });
     }
   }
 
+  /// タイマーの停止
   void _stopTimer() {
     _timer?.cancel();
     _timer = null;
-    _exciteSeconds = 0;
+    _silentSeconds = 0;
   }
 
-  void changeDirection(){
-    int rand = Random().nextInt(4); 
-    direction = Direction.values[rand];
-  }
-
-  Color changeBackground() {
-    if (!_isRecording) {
-      // 録音フラグがfalseの場合
-      return Colors.white;
-    } else if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
-      // 音が一定のdBより大きい
-      _startTimer();
-
-      if (_exciteSeconds >= 5) {
-        // 一定のdBより大きい状態が5秒以上続く
-        isSelected = false;
-        return Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC);
-      }
-    } else {
-      if (!isSelected) {
-        topic = selecter.select();
-        changeDirection();
-        isSelected = true;
-      }
-      _stopTimer();
-    }
-    return Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2);
-  }
-
-  GestureDetector changeEndButton(double screenWidth) {
-    if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
-      // 音が一定のdBより大きい
-
-      if (_exciteSeconds >= 5) {
-        // 一定のdBより大きい状態が5秒以上続く
-        return GestureDetector(
-          child: Transform.translate(
-              offset: Offset(screenWidth * 0.1, -screenWidth * 0.1),
-              child: SvgPicture.asset(
-                'images/button_end_excite.svg',
-                width: screenWidth * 0.45,
-              )),
-          onTap: () {
-            stop();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ResultScreen(score: _score)),
-            );
-          },
-        );
-      }
-    }
-    return GestureDetector(
-      child: Transform.translate(
-          offset: Offset(screenWidth * 0.05, -screenWidth * 0.02),
-          child: SvgPicture.asset(
-            'images/button_end_silent.svg',
-            width: screenWidth * 0.35,
-          )),
-      onTap: () {
-        stop();
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ResultScreen(
-                    score: _score,
-                  )),
-        );
-      },
+ /// おわるボタンをタップしたときの処理
+  void onTapEndButton() {
+    _stopNoiseMeter();
+    _stopTimer();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ResultScreen(score: _score)),
     );
   }
 
@@ -176,15 +148,28 @@ class _IceBreakState extends State<IceBreak> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Stack(
-        children: [
-          Align(
-              alignment: Alignment.topRight,
-              child: changeEndButton(screenWidth)),
-          IcebreakCharacter(screenWidth: screenWidth, theme: topic, direction: direction)
-        ],
-      ),
-      backgroundColor: changeBackground()
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        color: _state == IceBreakState.excite ? const Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC) : _state == IceBreakState.silent ? const Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2) : Colors.white,
+        child: Stack(
+          children: [
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: EndButton(screenWidth: screenWidth, state: IceBreakState.excite, onTap: onTapEndButton, isActive: _state == IceBreakState.excite),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: EndButton(screenWidth: screenWidth, state: IceBreakState.silent, onTap: onTapEndButton, isActive: _state != IceBreakState.excite),
+                ),
+              ],
+            ),
+            selector.getTopic() == '' ? Container() : 
+            CharacterSpeech(direction: direction.get(), text: selector.getTopic(), screenWidth: screenWidth)
+          ],
+        ),
+      )
     );
   }
 }

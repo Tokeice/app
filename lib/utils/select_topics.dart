@@ -1,10 +1,12 @@
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:developer' as developer;
 
 class SelectTopic {
   final String jsonPath;
   List<dynamic>? topics;
+  String topic = '';
 
   SelectTopic({required this.jsonPath});
   
@@ -13,23 +15,23 @@ class SelectTopic {
     try {
       String jsonString = await rootBundle.loadString(jsonPath);
       Map<String, dynamic> jsonData = json.decode(jsonString);
-      print('jsonData: ${jsonData["theme"]}');
       topics = jsonData['theme'];
     } catch (e) {
-      print("Error loading themes: $e");
+      developer.log("Error loading themes: $e");
       throw e;
     }
-    print('テーマのロードが完了しました。${topics}');
   }
 
-  String select() {
+  void select() {
     if (topics != null) {
       int rand = Random().nextInt(topics!.length); 
-      print('${topics![rand]}, ${rand}');
-      return topics![rand];
+      topic = topics![rand];
     }else{
-      print('topic is null');
-      return 'topic is null';
+      developer.log('topic is null');
     }
+  }
+
+  String getTopic() {
+    return topic;
   }
 }

@@ -25,16 +25,16 @@ class Score extends StatelessWidget {
       Text(
         calcScore(),
         style: TextStyle(
-            fontSize: screenWidth * 0.1,
-            fontWeight: FontWeight.bold,
-            color: const Color.fromARGB(0xFF, 0x41, 0x64, 0x98)),
+          fontSize: screenWidth * 0.1,
+          fontWeight: FontWeight.bold,
+          color: const Color.fromARGB(0xFF, 0x41, 0x64, 0x98)),
       ),
       Text(
         '盛り上がりました！',
         style: TextStyle(
-            fontSize: screenWidth * 0.1,
-            fontWeight: FontWeight.bold,
-            color: const Color.fromARGB(0xFF, 0x14, 0x25, 0x40)),
+          fontSize: screenWidth * 0.1,
+          fontWeight: FontWeight.bold,
+          color: const Color.fromARGB(0xFF, 0x14, 0x25, 0x40)),
       )
     ]);
   }
