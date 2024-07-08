@@ -3,13 +3,12 @@ import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
-import 'dart:math';
 
 import 'widget/end_button.dart';
 import 'widget/character_speech.dart';
 import 'type/IceBreakState.dart';
-import 'package:test_nm/type/Direction.dart';
 import 'utils/select_topics.dart';
+import 'utils/select_direction.dart';
 
 class IceBreak extends StatefulWidget {
   @override
@@ -22,23 +21,31 @@ class _IceBreakState extends State<IceBreak> {
   StreamSubscription<NoiseReading>? _noiseSubscription;
   NoiseMeter? noiseMeter;
 
-  int _silentSeconds = 10; // 沈黙判定の秒数カウント用
+  int _silentSeconds = 0; // 沈黙判定の秒数カウント用
   late int _score; // スコア
   Timer? _timer; // タイマー
   final int _threshold = 80; // 盛り上がり判定の閾値(dB)
   late IceBreakState _state;
 
-  SelectTopic selecter = SelectTopic(jsonPath: 'assets/topics.json');
-  Direction direction = Direction.left;
+  SelectTopic selector = SelectTopic(jsonPath: 'assets/topics.json');
+  SelectDirection direction = SelectDirection();
 
   @override
   void initState() {
     super.initState();
+    initialize();
+  }
+
+  Future<void> initialize() async {
+    await selector.loadTheme();
+    setState(() {
+      selector.select();
+      direction.select();
+      _score = 0;
+      _state = IceBreakState.normal;
+    });
     _startNoiseMeter();
     _startTimer();
-    selecter.loadTheme();
-    _score = 0;
-    _state = IceBreakState.normal;
   }
 
   @override
@@ -109,8 +116,8 @@ class _IceBreakState extends State<IceBreak> {
         }
 
         if (10 <= _silentSeconds) {
-          direction = Direction.values[Random().nextInt(4)];
-          selecter.select();
+          direction.select();
+          selector.select();
           setState(() {
             _silentSeconds = 0;
           });
@@ -158,7 +165,8 @@ class _IceBreakState extends State<IceBreak> {
                 ),
               ],
             ),
-            CharacterSpeech(direction: direction, text: selecter.getTopic(), screenWidth: screenWidth)
+            selector.getTopic() == '' ? Container() : 
+            CharacterSpeech(direction: direction.get(), text: selector.getTopic(), screenWidth: screenWidth)
           ],
         ),
       )

@@ -6,7 +6,7 @@ import 'dart:developer' as developer;
 class SelectTopic {
   final String jsonPath;
   List<dynamic>? topics;
-  String topic = 'Loading...';
+  String topic = '';
 
   SelectTopic({required this.jsonPath});
   
