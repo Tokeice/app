@@ -72,7 +72,7 @@ class EndButtonState extends State<EndButton> with SingleTickerProviderStateMixi
 
     return SlideTransition(
       position: _offsetAnimation,
-      child: GestureDetector(
+      child: InkResponse (
         onTap: widget.onTap as void Function(),
         child: Transform.translate(
           offset: Offset(offsetX, offsetY),

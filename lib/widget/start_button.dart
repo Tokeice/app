@@ -13,17 +13,19 @@ class StartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () { // svg画像がタップされたらアイスブレイク画面に遷移
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => IceBreak()),
-        );
-      },
-      child: SvgPicture.asset( // ボタンのsvg画像を表示
-        'images/button_start_ice_break.svg',
-        width: screenWidth * 0.8,
-      ),
+    return Center (
+      child: InkResponse (
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => IceBreak()),
+          );
+        },
+        child: SvgPicture.asset(
+          'images/button_start_ice_break.svg',
+          width: screenWidth * 0.8,
+        ),
+      )
     );
   }
 }

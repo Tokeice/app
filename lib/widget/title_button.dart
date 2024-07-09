@@ -12,7 +12,7 @@ class TitleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return InkResponse (
       onTap: () {
         Navigator.push(
           context,
