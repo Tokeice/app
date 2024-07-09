@@ -17,4 +17,5 @@
 <img src="https://img.shields.io/badge/-Dart-0099E5.svg?logo=dart&style=plastic">
 
 ## 今後の展望
-アイスが溶けるようにする。
+- 自己紹介機能の追加
+- アイスが溶けるようにする。
