@@ -16,9 +16,12 @@ class StartButton extends StatelessWidget {
     return Center (
       child: InkResponse (
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => IceBreak()),
+          Future.delayed(
+            const Duration(milliseconds: 100),
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => IceBreak()),
+            ),
           );
         },
         child: SvgPicture.asset(

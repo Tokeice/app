@@ -14,9 +14,12 @@ class TitleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkResponse (
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TitleScreen()),
+        Future.delayed(
+          const Duration(milliseconds: 100),
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TitleScreen()),
+          ),
         );
       },
       child: SvgPicture.asset(
