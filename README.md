@@ -1,16 +1,14 @@
-# test_nm
+# タイトル
 
-A new Flutter project.
+## 概要
+ここに概要
 
-## Getting Started
+ここにスクリーンショットなど
 
-This project is a starting point for a Flutter application.
+## 操作説明
+ここに説明
 
-A few resources to get you started if this is your first Flutter project:
+## 使用技術・動作環境
+ここに文章
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 今後の展望
