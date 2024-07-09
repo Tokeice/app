@@ -10,7 +10,7 @@
 
 ## 使用技術・動作環境
 <img src="https://img.shields.io/badge/-Flutter-02569B.svg?logo=flutter&style=plastic">
-
+<img src="https://img.shields.io/badge/-Dart-0099E5.svg?logo=dart&style=plastic">
 
 ## 今後の展望
 アイスが解けるようにする。
