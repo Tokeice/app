@@ -3,7 +3,11 @@
 ## 概要
 手軽なアイスブレイクを実現した、声量判定がついているコミュニケーションアプリ。
 
-ここにスクリーンショットなど
+![Screenshot_1720509599](https://github.com/Tokeice/app/assets/117695575/5b4d08c0-a074-4777-93b6-204e7d3213f7)
+![Screenshot_1720509585](https://github.com/Tokeice/app/assets/117695575/1acfe772-7f1b-4ab7-8a46-2f31c712d242)
+![Screenshot_1720510116](https://github.com/Tokeice/app/assets/117695575/f7fb8e63-f15a-482a-a274-70151e22110d)
+![Screenshot_1720510366](https://github.com/Tokeice/app/assets/117695575/55da2ddf-343c-40eb-8901-4901d4288d72)
+
 
 ## 操作説明
 スマホを囲んでスタートというボタンを押して開始。画面が暖色になるのを目指して、画面に表示される話題を利用しつつ会話をする。やめるボタンを押すと結果画面に移り、タイトル画面に戻ることが出来る。
