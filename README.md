@@ -13,4 +13,4 @@
 <img src="https://img.shields.io/badge/-Dart-0099E5.svg?logo=dart&style=plastic">
 
 ## 今後の展望
-アイスが解けるようにする。
+アイスが溶けるようにする。
