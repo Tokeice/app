@@ -7,9 +7,11 @@ class StartButton extends StatelessWidget {
   const StartButton({
     super.key,
     required this.screenWidth,
+    required this.threshold,
   });
 
   final double screenWidth;
+  final int threshold;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class StartButton extends StatelessWidget {
             const Duration(milliseconds: 100),
             () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => IceBreak()),
+              MaterialPageRoute(builder: (context) => IceBreak(threshold: threshold)),
             ),
           );
         },
