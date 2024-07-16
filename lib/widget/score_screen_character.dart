@@ -14,7 +14,7 @@ class ScoreScreenCharacter extends StatelessWidget {
     return Column(
       children: [
         SvgPicture.asset('images/speech_bubble_result.svg',
-          width: screenWidth * 0.5),
+          width: screenWidth * 0.7),
         SvgPicture.asset(
           'images/character_with_icecream.svg',
           width: screenWidth * 0.5, 

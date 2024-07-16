@@ -170,7 +170,7 @@ class _IceBreakState extends State<IceBreak> {
               ],
             ),
             selector.getTopic() == '' ? Container() : 
-            CharacterSpeech(direction: direction.get(), text: selector.getTopic(), screenWidth: screenWidth)
+            CharacterSpeech(direction: direction.get(), text: selector.getTopic(), screenWidth: screenWidth, isExcite: _state == IceBreakState.excite)
           ],
         ),
       )

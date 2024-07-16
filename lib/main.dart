@@ -3,6 +3,7 @@ import 'widget/start_button.dart';
 import 'widget/description_image.dart';
 import 'widget/app_title.dart';
 import 'widget/setting_button.dart';
+import 'widget/privacy_policy.dart';
 
 
 void main() => runApp(MyApp());
@@ -76,7 +77,8 @@ class TitleScreenState extends State<TitleScreen> {
         children: [
           AppTitle(screenWidth: screenWidth), // 画面上部のアプリタイトル
           DescriptionImage(screenWidth: screenWidth), // アプリの利用方法の説明画像
-          StartButton(screenWidth: screenWidth, threshold: threshold), // アイスブレイクのスタートボタン
+          StartButton(screenWidth: screenWidth), // アイスブレイクのスタートボタン
+          PrivacyPolicy(), // プライバシーポリシーの表示
           SettingButton(screenWidth: screenWidth, onPressed: () => _openSettingsModal(context)), // 設定ボタン
         ],
       ),

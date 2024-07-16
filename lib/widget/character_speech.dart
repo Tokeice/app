@@ -10,12 +10,14 @@ class CharacterSpeech extends StatefulWidget {
   final Direction direction;
   final String text;
   final double screenWidth;
+  final bool isExcite;
 
   const CharacterSpeech({
     super.key,
     required this.direction,
     required this.text,
     required this.screenWidth,
+    required this.isExcite,
   });
   
   @override
@@ -38,24 +40,28 @@ class CharacterSpeechState extends State<CharacterSpeech> with SingleTickerProvi
           text: widget.text,
           screenWidth: widget.screenWidth,
           isActive: widget.direction == Direction.top,
+          isExcite: widget.isExcite,
         ),
         DirectionCharacterSpeech(
           direction: Direction.bottom,
           text: widget.text,
           screenWidth: widget.screenWidth,
           isActive: widget.direction == Direction.bottom,
+          isExcite: widget.isExcite
         ),
         DirectionCharacterSpeech(
           direction: Direction.left,
           text: widget.text,
           screenWidth: widget.screenWidth,
           isActive: widget.direction == Direction.left,
+          isExcite: widget.isExcite
         ),
         DirectionCharacterSpeech(
           direction: Direction.right,
           text: widget.text,
           screenWidth: widget.screenWidth,
           isActive: widget.direction == Direction.right,
+          isExcite: widget.isExcite
         ),
       ],
     );
