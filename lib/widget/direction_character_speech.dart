@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:test_nm/type/Direction.dart';
 import 'package:flutter_svg/svg.dart';
 import 'speech_bubble.dart';
+import '../type/IceBreakState.dart';
 
 /// 方向を指定してキャラクターを表示する
 /// direction: キャラクターの向き
@@ -12,6 +13,7 @@ class DirectionCharacterSpeech extends StatefulWidget {
   final String text;
   final double screenWidth;
   final bool isActive;
+  final IceBreakState isExcite;
 
   const DirectionCharacterSpeech({
     super.key,
@@ -19,6 +21,7 @@ class DirectionCharacterSpeech extends StatefulWidget {
     required this.text,
     required this.screenWidth,
     required this.isActive,
+    required this.isExcite
   });
   
   @override
@@ -108,7 +111,7 @@ class DirectionCharacterSpeechState extends State<DirectionCharacterSpeech> with
                 if (widget.direction == Direction.top || widget.direction == Direction.bottom)
                   SizedBox(height: widget.screenWidth * 0.1),
                 SvgPicture.asset(
-                  'images/character_normal.svg',
+                  widget.isExcite == IceBreakState.excite ? 'images/character_sweat.svg' : 'images/character_normal.svg',
                   width: widget.screenWidth * 0.5,
                 ),
               ],
