@@ -77,9 +77,13 @@ class TitleScreenState extends State<TitleScreen> {
         children: [
           AppTitle(screenWidth: screenWidth), // 画面上部のアプリタイトル
           DescriptionImage(screenWidth: screenWidth), // アプリの利用方法の説明画像
-          StartButton(screenWidth: screenWidth), // アイスブレイクのスタートボタン
-          PrivacyPolicy(), // プライバシーポリシーの表示
-          SettingButton(screenWidth: screenWidth, onPressed: () => _openSettingsModal(context)), // 設定ボタン
+          StartButton(screenWidth: screenWidth, threshold: threshold), // アイスブレイクのスタートボタン
+          Stack(
+            children: [
+              PrivacyPolicy(), // プライバシーポリシーの表示
+              SettingButton(screenWidth: screenWidth, onPressed: () => _openSettingsModal(context)), // 設定ボタン
+            ],
+          )
         ],
       ),
     );
