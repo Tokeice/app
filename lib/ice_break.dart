@@ -3,6 +3,7 @@ import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'widget/end_button.dart';
 import 'widget/character_speech.dart';
@@ -37,6 +38,7 @@ class _IceBreakState extends State<IceBreak> {
   void initState() {
     super.initState();
     initialize();
+    WakelockPlus.enable();
   }
 
   Future<void> initialize() async {
@@ -57,6 +59,7 @@ class _IceBreakState extends State<IceBreak> {
     _stopNoiseMeter();
     _timer?.cancel();
     super.dispose();
+    WakelockPlus.disable();
   }
 
   void onData(NoiseReading noiseReading) =>
