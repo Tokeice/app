@@ -1,4 +1,4 @@
-package com.example.test_nm
+package com.sousei_tokeice.tokeice
 
 import io.flutter.embedding.android.FlutterActivity
 
