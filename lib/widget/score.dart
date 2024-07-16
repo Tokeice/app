@@ -32,7 +32,7 @@ class Score extends StatelessWidget {
       Text(
         '盛り上がりました！',
         style: TextStyle(
-          fontSize: screenWidth * 0.1,
+          fontSize: screenWidth * 0.09,
           fontWeight: FontWeight.bold,
           color: const Color.fromARGB(0xFF, 0x14, 0x25, 0x40)),
       )
