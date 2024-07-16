@@ -126,7 +126,7 @@ class _IceBreakState extends State<IceBreak> {
           setState(() {
             direction.select();
             selector.select();
-            _silentSeconds = -5;
+            _silentSeconds = 0;
           });
         }
 
