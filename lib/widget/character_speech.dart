@@ -11,7 +11,7 @@ class CharacterSpeech extends StatefulWidget {
   final Direction direction;
   final String text;
   final double screenWidth;
-  final IceBreakState isExcite;
+  final bool isExcite;
 
   const CharacterSpeech({
     super.key,
