@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'widget/start_button.dart';
 import 'widget/description_image.dart';
 import 'widget/app_title.dart';
+import 'widget/privacy_policy.dart';
 
 
 void main() => runApp(MyApp());
@@ -38,7 +39,7 @@ class TitleScreenState extends State<TitleScreen> {
           AppTitle(screenWidth: screenWidth), // 画面上部のアプリタイトル
           DescriptionImage(screenWidth: screenWidth), // アプリの利用方法の説明画像
           StartButton(screenWidth: screenWidth), // アイスブレイクのスタートボタン
-          SizedBox(height: screenWidth * 0.001)
+          PrivacyPolicy(), // プライバシーポリシーの表示
         ],
       ),
     );
