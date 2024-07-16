@@ -10,7 +10,7 @@
 ![Screenshot_1720509599](https://github.com/Tokeice/app/assets/117695575/5b4d08c0-a074-4777-93b6-204e7d3213f7)
 ![Screenshot_1720509585](https://github.com/Tokeice/app/assets/117695575/1acfe772-7f1b-4ab7-8a46-2f31c712d242)
 ![Screenshot_1720510116](https://github.com/Tokeice/app/assets/117695575/f7fb8e63-f15a-482a-a274-70151e22110d)
-![Screenshot_1720510366](https://github.com/Tokeice/app/assets/117695575/55da2ddf-343c-40eb-8901-4901d4288d72)
+![Screenshot_1720601390 1](https://github.com/user-attachments/assets/c4e625b3-9f3a-430c-a2a9-f0c4d5c7ffcc)
 
 
 ## 操作説明
@@ -27,7 +27,7 @@
 2. ```flutter run```で起動
 
 ## 今後の展望
-- 自己紹介機能の追加
+- Google Play Storeへのリリース
 - 人数の制限の拡張
 - グループ毎に合わせた沈黙条件の柔軟な設定
 - 話していない人を特定して話題を振る

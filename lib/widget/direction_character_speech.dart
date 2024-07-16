@@ -12,6 +12,7 @@ class DirectionCharacterSpeech extends StatefulWidget {
   final String text;
   final double screenWidth;
   final bool isActive;
+  final bool isExcite;
 
   const DirectionCharacterSpeech({
     super.key,
@@ -19,6 +20,7 @@ class DirectionCharacterSpeech extends StatefulWidget {
     required this.text,
     required this.screenWidth,
     required this.isActive,
+    required this.isExcite
   });
   
   @override
@@ -108,7 +110,7 @@ class DirectionCharacterSpeechState extends State<DirectionCharacterSpeech> with
                 if (widget.direction == Direction.top || widget.direction == Direction.bottom)
                   SizedBox(height: widget.screenWidth * 0.1),
                 SvgPicture.asset(
-                  'images/character_normal.svg',
+                  widget.isExcite ? 'images/character_sweat.svg' : 'images/character_normal.svg',
                   width: widget.screenWidth * 0.5,
                 ),
               ],
