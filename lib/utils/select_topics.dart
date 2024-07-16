@@ -7,6 +7,8 @@ class SelectTopic {
   final String jsonPath;
   List<dynamic>? topics;
   String topic = '';
+  /// 元のトピックリスト
+  List<dynamic>? originalTopics;
 
   SelectTopic({required this.jsonPath});
   
@@ -15,7 +17,8 @@ class SelectTopic {
     try {
       String jsonString = await rootBundle.loadString(jsonPath);
       Map<String, dynamic> jsonData = json.decode(jsonString);
-      topics = jsonData['theme'];
+      topics = List<dynamic>.from(jsonData['theme']);
+      originalTopics = List<dynamic>.from(jsonData['theme']);
     } catch (e) {
       developer.log("Error loading themes: $e");
       throw e;
@@ -23,11 +26,16 @@ class SelectTopic {
   }
 
   void select() {
-    if (topics != null) {
-      int rand = Random().nextInt(topics!.length); 
-      topic = topics![rand];
-    }else{
-      developer.log('topic is null');
+    // トピックが被らないように選択する
+    if (topics != null && topics!.isNotEmpty) {
+      int rand = Random().nextInt(topics!.length);
+      topic = topics!.removeAt(rand); // 選ばれたトピックをリストから削除
+    } else if (originalTopics != null) { // トピックがなくなった場合、元のリストから選択
+      topics = List<dynamic>.from(originalTopics!);
+      int rand = Random().nextInt(topics!.length);
+      topic = topics!.removeAt(rand);
+    } else {
+      developer.log('topics is null or empty');
     }
   }
 

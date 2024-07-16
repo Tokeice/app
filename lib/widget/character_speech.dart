@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:test_nm/type/Direction.dart';
 import 'direction_character_speech.dart';
-import '../type/IceBreakState.dart';
 
 /// キャラクターを上下左右に表示する
 /// direction: キャラクターの向き
