@@ -3,6 +3,7 @@ import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_nm/result_screen.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'widget/end_button.dart';
 import 'widget/character_speech.dart';
@@ -11,6 +12,9 @@ import 'utils/select_topics.dart';
 import 'utils/select_direction.dart';
 
 class IceBreak extends StatefulWidget {
+  IceBreak({required this.threshold});
+  final int threshold;
+
   @override
   _IceBreakState createState() => _IceBreakState();
 }
@@ -24,7 +28,7 @@ class _IceBreakState extends State<IceBreak> {
   int _silentSeconds = 0; // 沈黙判定の秒数カウント用
   late int _score; // スコア
   Timer? _timer; // タイマー
-  final int _threshold = 80; // 盛り上がり判定の閾値(dB)
+  late int _threshold; // 盛り上がり判定の閾値(dB)
   late IceBreakState _state;
 
   SelectTopic selector = SelectTopic(jsonPath: 'assets/topics.json');
@@ -34,11 +38,13 @@ class _IceBreakState extends State<IceBreak> {
   void initState() {
     super.initState();
     initialize();
+    WakelockPlus.enable();
   }
 
   Future<void> initialize() async {
     await selector.loadTheme();
     setState(() {
+      _threshold = widget.threshold;
       selector.select();
       direction.select();
       _score = 0;
@@ -53,6 +59,7 @@ class _IceBreakState extends State<IceBreak> {
     _stopNoiseMeter();
     _timer?.cancel();
     super.dispose();
+    WakelockPlus.disable();
   }
 
   void onData(NoiseReading noiseReading) =>
