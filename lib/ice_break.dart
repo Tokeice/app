@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_nm/class/ThresholdClass.dart';
 import 'package:test_nm/result_screen.dart';
 
 import 'widget/end_button.dart';
@@ -24,7 +26,7 @@ class _IceBreakState extends State<IceBreak> {
   int _silentSeconds = 0; // 沈黙判定の秒数カウント用
   late int _score; // スコア
   Timer? _timer; // タイマー
-  final int _threshold = 80; // 盛り上がり判定の閾値(dB)
+  ThresholdClass _threshold = ThresholdClass(80); // 盛り上がり判定の閾値インスタンス
   late IceBreakState _state;
 
   SelectTopic selector = SelectTopic(jsonPath: 'assets/topics.json');
@@ -93,7 +95,12 @@ class _IceBreakState extends State<IceBreak> {
   void _startTimer() {
     if (_timer == null || !_timer!.isActive) {
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if ((_latestReading?.meanDecibel ?? 0) > _threshold) {
+        if (_latestReading != null) {
+          _threshold.addSample(_latestReading!.meanDecibel); // 閾値の取得
+          _threshold.calcThreshold(); // 閾値を計算
+        }
+
+        if ((_latestReading?.meanDecibel ?? 0) > _threshold.getThreshold()) {
           // 音量が閾値より大きい
           setState(() {
             _score++; // スコアの秒数の加算
@@ -122,7 +129,6 @@ class _IceBreakState extends State<IceBreak> {
             _silentSeconds = 0;
           });
         }
-
       });
     }
   }
@@ -134,7 +140,7 @@ class _IceBreakState extends State<IceBreak> {
     _silentSeconds = 0;
   }
 
- /// おわるボタンをタップしたときの処理
+  /// おわるボタンをタップしたときの処理
   void onTapEndButton() {
     _stopNoiseMeter();
     _stopTimer();
@@ -148,28 +154,44 @@ class _IceBreakState extends State<IceBreak> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        color: _state == IceBreakState.excite ? const Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC) : _state == IceBreakState.silent ? const Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2) : Colors.white,
-        child: Stack(
-          children: [
-            Stack(
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: EndButton(screenWidth: screenWidth, state: IceBreakState.excite, onTap: onTapEndButton, isActive: _state == IceBreakState.excite),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: EndButton(screenWidth: screenWidth, state: IceBreakState.silent, onTap: onTapEndButton, isActive: _state != IceBreakState.excite),
-                ),
-              ],
-            ),
-            selector.getTopic() == '' ? Container() : 
-            CharacterSpeech(direction: direction.get(), text: selector.getTopic(), screenWidth: screenWidth, isExcite: _state == IceBreakState.excite)
-          ],
-        ),
-      )
-    );
+        body: AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      color: _state == IceBreakState.excite
+          ? const Color.fromARGB(0xFF, 0xFE, 0xBB, 0xAC)
+          : _state == IceBreakState.silent
+              ? const Color.fromARGB(0xFF, 0x6B, 0xA9, 0xE2)
+              : Colors.white,
+      child: Stack(
+        children: [
+          Stack(
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: EndButton(
+                    screenWidth: screenWidth,
+                    state: IceBreakState.excite,
+                    onTap: onTapEndButton,
+                    isActive: _state == IceBreakState.excite),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: EndButton(
+                    screenWidth: screenWidth,
+                    state: IceBreakState.silent,
+                    onTap: onTapEndButton,
+                    isActive: _state != IceBreakState.excite),
+              ),
+            ],
+          ),
+          selector.getTopic() == ''
+              ? Container()
+              : CharacterSpeech(
+                  direction: direction.get(),
+                  text: selector.getTopic(),
+                  screenWidth: screenWidth,
+                  isExcite: _state == IceBreakState.excite)
+        ],
+      ),
+    ));
   }
 }
