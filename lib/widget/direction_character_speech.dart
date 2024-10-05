@@ -40,7 +40,7 @@ class DirectionCharacterSpeechState extends State<DirectionCharacterSpeech> with
     );
 
     _offsetAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
+      begin: const Offset(0, 1.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -86,12 +86,20 @@ class DirectionCharacterSpeechState extends State<DirectionCharacterSpeech> with
         angle = 0;
         break;
       case Direction.left:
+        alignment = Alignment.centerLeft;
+        angle = -3.14159 / 2;
+        break;
+      case Direction.right:
         alignment = Alignment.centerRight;
         angle = 3.14159 / 2;
         break;
-      case Direction.right:
-        alignment = Alignment.centerLeft;
-        angle = -3.14159 / 2;
+      case Direction.rightBottom:
+        alignment = Alignment.bottomRight;
+        angle = 3.14159 / 4;
+        break;
+      case Direction.leftBottom:
+        alignment = Alignment.bottomLeft;
+        angle = -3.14159 / 4;
         break;
     }
 

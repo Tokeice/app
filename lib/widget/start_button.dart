@@ -20,7 +20,7 @@ class StartButton extends StatelessWidget {
             const Duration(milliseconds: 100),
             () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => IceBreak()),
+              MaterialPageRoute(builder: (context) => IceBreak(playerNum: 5)),
             ),
           );
         },

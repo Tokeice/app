@@ -26,6 +26,8 @@ class SpeechBubble extends StatelessWidget {
     switch (direction) {
       case Direction.top:
       case Direction.bottom:
+      case Direction.rightBottom:
+      case Direction.leftBottom:
         scaleX = 1.0;
         scaleY = 1.3;
         break;
