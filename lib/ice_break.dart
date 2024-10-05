@@ -11,6 +11,9 @@ import 'utils/select_topics.dart';
 import 'utils/select_direction.dart';
 
 class IceBreak extends StatefulWidget {
+  IceBreak({required this.playerNum});
+  final int playerNum;
+
   @override
   _IceBreakState createState() => _IceBreakState();
 }
@@ -26,9 +29,9 @@ class _IceBreakState extends State<IceBreak> {
   Timer? _timer; // タイマー
   final int _threshold = 80; // 盛り上がり判定の閾値(dB)
   late IceBreakState _state;
+  late SelectDirection directionSelector;
 
-  SelectTopic selector = SelectTopic(jsonPath: 'assets/topics.json');
-  SelectDirection direction = SelectDirection();
+  SelectTopic topicSelector = SelectTopic(jsonPath: 'assets/topics.json');
 
   @override
   void initState() {
@@ -37,10 +40,11 @@ class _IceBreakState extends State<IceBreak> {
   }
 
   Future<void> initialize() async {
-    await selector.loadTheme();
+    await topicSelector.loadTheme();
+    directionSelector = SelectDirection(widget.playerNum);
     setState(() {
-      selector.select();
-      direction.select();
+      topicSelector.select();
+      directionSelector.selectRandomDirection();
       _score = 0;
       _state = IceBreakState.normal;
     });
@@ -117,8 +121,8 @@ class _IceBreakState extends State<IceBreak> {
 
         if (5 <= _silentSeconds) {
           setState(() {
-            direction.select();
-            selector.select();
+            directionSelector.selectRandomDirection();
+            topicSelector.select();
             _silentSeconds = 0;
           });
         }
@@ -165,8 +169,8 @@ class _IceBreakState extends State<IceBreak> {
                 ),
               ],
             ),
-            selector.getTopic() == '' ? Container() : 
-            CharacterSpeech(direction: direction.get(), text: selector.getTopic(), screenWidth: screenWidth, isExcite: _state == IceBreakState.excite)
+            topicSelector.getTopic() == '' ? Container() : 
+            CharacterSpeech(direction: directionSelector.getDirection(), text: topicSelector.getTopic(), screenWidth: screenWidth, isExcite: _state == IceBreakState.excite)
           ],
         ),
       )

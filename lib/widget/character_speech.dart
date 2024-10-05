@@ -63,6 +63,20 @@ class CharacterSpeechState extends State<CharacterSpeech> with SingleTickerProvi
           isActive: widget.direction == Direction.right,
           isExcite: widget.isExcite
         ),
+        DirectionCharacterSpeech(
+          direction: Direction.rightBottom,
+          text: widget.text,
+          screenWidth: widget.screenWidth,
+          isActive: widget.direction == Direction.rightBottom,
+          isExcite: widget.isExcite
+        ),
+        DirectionCharacterSpeech(
+          direction: Direction.leftBottom,
+          text: widget.text,
+          screenWidth: widget.screenWidth,
+          isActive: widget.direction == Direction.leftBottom,
+          isExcite: widget.isExcite
+        ),
       ],
     );
   }
